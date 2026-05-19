@@ -1,7 +1,7 @@
 
 # 🌍 İklim Dirençli Kentler: 3B Kentsel Morfoloji ve Makine Öğrenmesi Destekli Karbon Risk Modeli
 
-**Geliştirici:** İzmir Katip Çelebi Üniversitesi, Geomatik Mühendisliği - Grup 6 (Manifest)
+**Geliştirici:** DOĞA DURAK İzmir Katip Çelebi Üniversitesi, Harita Mühendisliği 
 **Bölge:** İzmir / Bayraklı
 
 ---
