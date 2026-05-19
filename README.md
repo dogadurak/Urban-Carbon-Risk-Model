@@ -54,7 +54,7 @@ Urban-Carbon-Risk-Model/
 | Road network | OpenStreetMap (OSMnx) | GeoJSON |
 | Green areas | OpenStreetMap (OSMnx) | GeoJSON |
 | Land Surface Temperature | Landsat 8 | GeoTIFF |
-| NDVI (Vegetation Index) | Landsat 8 | GeoTIFF |
+| NDVI (Vegetation Index) | Landsat 2 | GeoTIFF |
 | Population density | Türkiye Nüfus Grid (1km) | GeoTIFF |
 | Industrial/commercial areas | OpenStreetMap | GeoJSON |
 | Parking lots | OpenStreetMap | GeoJSON |
