@@ -200,3 +200,83 @@ Bu model sonucunda belediyeler ve AFAD için şu eylem planları haritalandırı
 1.  **Risk Grubu 5 (Ekstrem Risk):** Transit ulaşım ve gökdelenler. (Öneri: Acil emisyon bariyerleri ve yeşil çatı zorunluluğu).
 2.  **Risk Grubu 4 (Isı Adaları):** Yoğun, ağaçsız betonarme doku. (Öneri: Mikro ağaçlandırma ve rüzgar koridoru açma çalışmaları).
 3.  **Kırılganlık Kesişimi:** En yüksek Karbon Riski ile 65+ yaş nüfusun kesiştiği "Acil Müdahale" sokakları.
+
+# 🏙️ Urban Carbon Risk Model — Bayraklı, İzmir
+
+A **grid-based urban carbon risk index** developed for the Bayraklı district of İzmir, Turkey.
+Building volume, road networks, traffic emissions, green areas, land surface temperature (LST),
+and vegetation index (NDVI) are integrated into a hierarchical AHP model to assign a carbon risk score
+to each 50×50m grid cell and individual building. K-Means clustering is applied to identify spatial risk zones.
+
+---
+
+## 🗺️ Maps
+
+### 1. Carbon Risk Index (Final Score)
+![Carbon Risk Score](maps/karbon_risk_skoru.png)
+> Final grid-based carbon risk index (0–100). Red = high risk (coastal strip, Altınyol corridor), Blue = low risk (northern vegetated slopes).
+
+---
+
+### 2. Sub-Index Maps
+
+#### 🚗 Transportation Emission Index
+![Transportation Index](maps/ualsim_index.png)
+> Combines road network score (60%), traffic emission points (25%), and parking lots (15%). Highlights major arterial corridors and dense traffic zones.
+
+#### 🏢 Structural Emission Index
+![Structural Index](maps/yapisal_index.png)
+> Combines building volume score (55%), population density (30%), and industrial/commercial area (15%). Building mask applied — cells with no buildings receive score = 0.
+
+#### 🌡️ Urban Microclimate Index
+![Microclimate Index](maps/mikroklima_index.png)
+> LST (70%) minus NDVI (30%). Highlights urban heat island zones where high temperature meets low vegetation.
+
+---
+
+### 3. Input Data Maps
+
+#### 🌿 NDVI — Vegetation Index
+![NDVI](maps/NDVI_bayrakli.png)
+> Derived from Landsat 9 (Band 4 & Band 5) via thresholding methods. Orange/red = low vegetation (urban core), Green/teal = high vegetation (northern slopes).
+
+#### 🌡️ LST — Land Surface Temperature
+![LST](maps/lst_bayrakli.png)
+> Derived from Landsat 9 (Band 10) utilizing TOA Radiance and the Jimenez-Munoz & Sobrino equation. Red = high temperature (urban heat island), Blue = cool (forested slopes). Range: **19.1°C – 29.4°C**.
+>
+> 🔬 **Scientific Note on LST Values:** > The calculated temperature range reflects **instantaneous morning surface temperatures**, not daily maximum air temperatures. Landsat 9 passes over the İzmir region at approximately **10:30 AM local time**, capturing the thermal signature of surfaces before they absorb peak midday solar radiation. Furthermore, the 30-meter spatial resolution introduces a **"mixed-pixel effect"**; a single grid cell's thermal value represents a weighted average of sunlit concrete, cooling vegetation, and long morning shadows cast by high-rise structures (e.g., Bayraklı Tower, Biva Tower). This makes the 19°C - 29°C range highly accurate for this specific temporal window.
+
+---
+
+### 4. K-Means Cluster Map
+![K-Means](maps/k_means.png)
+> 6 spatially coherent risk zones identified by unsupervised machine learning (silhouette score = 0.335).
+
+---
+
+## 📌 Project Pipeline
+
+```text
+Landsat 9 → LST & NDVI Processing (QGIS / Python)
+                    +
+        OSM Data Collection (OSMnx)
+                    ↓
+   Building Volume & Road Carbon Scoring
+                    ↓
+  Grid-Based Spatial Integration
+  (Overlay + Spatial Join + Raster Sampling)
+                    ↓
+      Min-Max Normalization (0–1)
+                    ↓
+   AHP Hierarchical Carbon Risk Index
+   ┌─────────────────────────────────┐
+   │  Transportation Index  → 40%    │
+   │  Structural Index      → 40%    │
+   │  Microclimate Index    → 20%    │
+   └─────────────────────────────────┘
+                    ↓
+      Building-Level Risk Transfer
+                    ↓
+    K-Means Clustering (k=6)
+                    ↓
+    Statistical Validation
