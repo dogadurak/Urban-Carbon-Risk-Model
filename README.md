@@ -81,20 +81,50 @@ Landsat 9 → LST & NDVI Modelleme (QGIS / Python)
                     ↓
     İstatistiksel Validasyon & Korelasyon
 
-🗂️ 4. Veri Kaynakları (Data Sources)Veri SetiKaynakİşleme / ModellemeFormatBina Geometrileri (Footprints)OpenStreetMap (OSMnx)Python (GeoPandas)GeoJSONYol Ağı (Road Network)OpenStreetMap (OSMnx)Python (GeoPandas)GeoJSONYeşil Alanlar (Green Areas)OpenStreetMapPython (GeoPandas)GeoJSONTicari / Endüstriyel AlanlarOpenStreetMapPythonGeoJSONOtopark PoligonlarıOpenStreetMapPythonGeoJSONTrafik Yoğunluk OdaklarıOpenStreetMapPythonGeoJSONArazi Yüzey Sıcaklığı (LST)Landsat 9 (B10)QGIS / Python (rasterio)GeoTIFFNDVI (Bitki Örtüsü İndeksi)Landsat 9 (B4, B5)QGIS / Python (rasterio)GeoTIFFNüfus YoğunluğuTürkiye Nüfus Grid (1km)Python (Spatially Resampled)GeoTIFF🏗️ 5. Veri Üretimi: Akıllı Kat ve Hacim Proxy Modeli (Smart Proxy Model)Bayraklı bölgesi için OpenStreetMap (OSM) verilerinde binaların kat bilgileri (building:levels) büyük oranda eksikti. Çalışmanın en önemli girdilerinden biri olan hacimsel "Yapısal Emisyon İndeksi"ni hesaplayabilmek için eksik veriler yerine geçecek (proxy) bir tahmin modeli geliştirilmiştir.Python ve GeoPandas kullanılarak yazılan bu Akıllı Kat Tahmini algoritması; bina isimlendirmeleri, OSM building / amenity etiketleri ve poligon taban alanı (m²) büyüklüklerini entegre ederek mantıksal kat ataması yapmaktadır. Özellikle bölgenin kentsel silüetini ve karbon yükünü büyük oranda etkileyen sembol gökdelenlerde otomatik tahminin yaratacağı standart sapmayı önlemek için koda özel kurallar tanımlanmış; Bayraklı Tower ve Biva Tower gibi yapılar doğrudan 35 kat olarak modele sabitlenmiştir.Kullanılan veri üretim algoritması dosyalarda yer almaktadır.
+```
+
+---
+
+## 🗂️ 4. Veri Kaynakları (Data Sources)
+
+| Veri Seti | Kaynak | İşleme / Modelleme | Format |
+| --- | --- | --- | --- |
+| Bina Geometrileri (Footprints) | OpenStreetMap (OSMnx) | Python (GeoPandas) | GeoJSON |
+| Yol Ağı (Road Network) | OpenStreetMap (OSMnx) | Python (GeoPandas) | GeoJSON |
+| Yeşil Alanlar (Green Areas) | OpenStreetMap | Python (GeoPandas) | GeoJSON |
+| Ticari / Endüstriyel Alanlar | OpenStreetMap | Python | GeoJSON |
+| Otopark Poligonları | OpenStreetMap | Python | GeoJSON |
+| Trafik Yoğunluk Odakları | OpenStreetMap | Python | GeoJSON |
+| Arazi Yüzey Sıcaklığı (LST) | Landsat 9 (B10) | QGIS / Python (rasterio) | GeoTIFF |
+| NDVI (Bitki Örtüsü İndeksi) | Landsat 9 (B4, B5) | QGIS / Python (rasterio) | GeoTIFF |
+| Nüfus Yoğunluğu | Türkiye Nüfus Grid (1km) | Python (Spatially Resampled) | GeoTIFF |
+
+---
+
+## 🏗️ 5. Veri Üretimi: Akıllı Kat ve Hacim Proxy Modeli (Smart Proxy Model)
+
+Bayraklı bölgesi için OpenStreetMap (OSM) verilerinde binaların kat bilgileri (`building:levels`) büyük oranda eksikti. Çalışmanın en önemli girdilerinden biri olan hacimsel "Yapısal Emisyon İndeksi"ni hesaplayabilmek için eksik veriler yerine geçecek (proxy) bir tahmin modeli geliştirilmiştir.
+
+Python ve GeoPandas kullanılarak yazılan bu Akıllı Kat Tahmini algoritması; bina isimlendirmeleri, OSM `building` / `amenity` etiketleri ve poligon taban alanı (m²) büyüklüklerini entegre ederek mantıksal kat ataması yapmaktadır.
+
+Özellikle bölgenin kentsel silüetini ve karbon yükünü büyük oranda etkileyen sembol gökdelenlerde otomatik tahminin yaratacağı standart sapmayı önlemek için koda özel kurallar tanımlanmış; Bayraklı Tower ve Biva Tower gibi yapılar doğrudan 35 kat olarak modele sabitlenmiştir. Kullanılan veri üretim algoritması dosyalarda yer almaktadır.
+
+---
 
 ## ⚖️ 6. AHP Ağırlık Matrisleri (AHP Weight Tables)
 
 ### 🚗 Alt İndeks 1: Ulaşım Emisyon İndeksi (%40)
+
 | Kriter | Ağırlık | Bilimsel Gerekçe |
-|---|---|---|
+| --- | --- | --- |
 | Yol Ağ Skoru (Sınıf bazlı) | 0.60 | Birincil emisyon kaynağı (Örn: Altınyol ana transit hattı) |
 | Trafik Emisyon Noktaları | 0.25 | Kavşak ve dur-kalk noktalarında biriken doğrudan CO₂ salınımı |
 | Otopark Alanları | 0.15 | Araç rölanti ve parklanma kaynaklı mikro emisyon bölgeleri |
 
 ### 🏢 Alt İndeks 2: Yapısal Emisyon İndeksi (%40)
+
 | Kriter | Ağırlık | Bilimsel Gerekçe |
-|---|---|---|
+| --- | --- | --- |
 | Bina Hacim Skoru | 0.55 | Bina hacmi arttıkça enerji tüketimi ve karbon ayak izi doğrusal artar |
 | Nüfus Yoğunluğu | 0.30 | Karbon emisyonuna maruz kalan insan yoğunluğu (Maruziyet Çarpanı) |
 | Endüstriyel/Ticari Alanlar | 0.15 | Ticari faaliyetlerden kaynaklanan ikincil emisyonlar |
@@ -102,8 +132,9 @@ Landsat 9 → LST & NDVI Modelleme (QGIS / Python)
 > ⚠️ **Önemli Metodolojik Not:** Bina bulunmayan boş hücrelerin (açık araziler) yapısal emisyon indeks değeri otomatik olarak 0 yapılmıştır. Böylece düşük çözünürlüklü nüfus verilerinin boş arazilerde yapay risk skorları üretmesi engellenmiştir.
 
 ### 🌡️ Alt İndeks 3: Kentsel Mikroklima İndeksi (%20)
+
 | Kriter | Ağırlık | Etki Yönü | Bilimsel Gerekçe |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | LST (Yüzey Sıcaklığı) | 0.70 | ➕ Pozitif | Isı birikimi kentsel karbon riskini artıran bir iklimsel çarpandır |
 | NDVI (Bitki Örtüsü) | 0.30 | ➖ Negatif | Yeşil doku karbon yutağı ve serinletici etki sağlar (Azaltıcı faktör) |
 
@@ -112,7 +143,7 @@ Landsat 9 → LST & NDVI Modelleme (QGIS / Python)
 ## 📊 7. K-Means Kümeleme Analizi Sonuçları (k=6, Silhouette=0.335)
 
 | Küme (Cluster) | Ortalama Risk | Hücre Sayısı | Mekânsal Karşılık ve Yorum |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Risk Grubu 1 | 11.1 | 6,118 (%37.7) | Doğal Alanlar, Yapılaşmamış Boş Yamaçlar ve Yeşil Koridorlar |
 | Risk Group 2 | 38.0 | 9,678 (%59.6) | Düşük Yoğunluklu Yerleşim Alanları ve Az Katlı Konut Dokusu |
 | Risk Group 3 | 42.7 | 297 (%1.8) | Kentsel Isı Adaları ve Bitki Örtüsünden Kopuk Yoğun Beton Yapısal Doku |
@@ -127,7 +158,7 @@ Landsat 9 → LST & NDVI Modelleme (QGIS / Python)
 Modelin doğruluğunu ve fiziksel tutarlılığını test etmek amacıyla p-value < 0.001 anlamlılık düzeyinde Pearson Korelasyon Analizi gerçekleştirilmiştir:
 
 | Değişken İlişkisi | Pearson r | Bilimsel Doğrulama Durumu |
-|---|---|---|
+| --- | --- | --- |
 | Nihai Risk ↔ n_NDVI | −0.823 | ✅ Güçlü Negatif — Yeşil alanların karbon riskini düşürdüğü kanıtlandı. |
 | Nihai Risk ↔ n_LST | +0.681 | ✅ Güçlü Pozitif — Yüzey sıcaklığının risk haritasıyla uyumu (UHI Etkisi). |
 | Nihai Risk ↔ n_nufus | +0.611 | ✅ Pozitif — Nüfus yoğunluğunun risk maruziyetini artırdığı doğrulandı. |
@@ -137,14 +168,19 @@ Modelin doğruluğunu ve fiziksel tutarlılığını test etmek amacıyla p-valu
 | Nihai Risk ↔ n_otopark | +0.127 | ✅ Pozitif — Otopark alanlarının bölgesel risk artırıcı etkisi. |
 | Nihai Risk ↔ n_sanayi | +0.103 | ✅ Pozitif — Ticari/endüstriyel parsel emisyon ilişkisi. |
 
-> 📊 **LST ↔ NDVI İlişkisi: r = −0.628** > Bitki örtüsünün yoğun olduğu alanlarda arazi yüzey sıcaklığının düştüğü istatistiksel olarak teyit edilmiştir. Bu durum, uzaktan algılama literatüründeki fiziksel yasalarla tam olarak örtüşmektedir.
+> 📊 **LST ↔ NDVI İlişkisi: r = −0.628** 
+> 
+> 
+> 
+> 
+> Bitki örtüsünün yoğun olduğu alanlarda arazi yüzey sıcaklığının düştüğü istatistiksel olarak teyit edilmiştir. Bu durum, uzaktan algılama literatüründeki fiziksel yasalarla tam olarak örtüşmektedir.
 
 ---
 
 ## 🛠️ 9. Kullanılan Teknolojiler (Tech Stack)
 
 | Kütüphane / Araç | Kullanım Amacı |
-|---|---|
+| --- | --- |
 | `geopandas` | Mekânsal overlay, spatial join, CRS dönüşümleri ve vektör analizi |
 | `osmnx` | OpenStreetMap üzerinden hassas kentsel veri madenciliği |
 | `rasterio` | Raster verilerin (LST, NDVI, Nüfus) hücre tabanlı örneklenmesi (sampling) |
@@ -160,7 +196,15 @@ Modelin doğruluğunu ve fiziksel tutarlılığını test etmek amacıyla p-valu
 Bu modelleme çalışması sonucunda yerel yönetimler (Belediyeler) ve afet yönetim birimleri (AFAD) için uygulanabilir şu stratejik eylem planları haritalandırılmıştır:
 
 1. **Risk Grubu 5 & 6 (Ekstrem ve Kritik Risk) Alanları:** Transit ulaşım ağları (Altınyol) ve gökdelenler/yüksek katlı iş merkezlerinin bulunduğu bölgeler.
-   * *Öneri:* Bu alanlarda acil dikey yeşil altyapı (yeşil çatı/duvar zorunluluğu), mikroklimatik rüzgar koridorlarının korunması ve emisyon azaltıcı karbon bariyerlerinin uygulanması gerekmektedir.
+* *Öneri:* Bu alanlarda acil dikey yeşil altyapı (yeşil çatı/duvar zorunluluğu), mikroklimatik rüzgar koridorlarının korunması ve emisyon azaltıcı karbon bariyerlerinin uygulanması gerekmektedir.
+
+
 2. **Risk Grubu 3 & 4 (Kentsel Isı Adaları):** Yapısal yoğunluğun fazla, ağaçlandırmanın yetersiz olduğu betonarme alanlar.
-   * *Öneri:* Kentsel ısı adası etkisini azaltmak adına cep parkları, mikro ağaçlandırma projeleri ve yollarda/kaldırımlarda yüksek albedolu (yansıtıcı) malzeme kullanımı teşvik edilmelidir.
+* *Öneri:* Kentsel ısı adası etkisini azaltmak adına cep parkları, mikro ağaçlandırma projeleri ve yollarda/kaldırımlarda yüksek albedolu (yansıtıcı) malzeme kullanımı teşvik edilmelidir.
+
+
 3. **Sosyal Kırılganlık Kesişimi:** En yüksek karbon riski taşıyan hücreler ile demografik veriler (örneğin 65+ yaş üstü nüfus yoğunluğu) coğrafi olarak çakıştırılarak, iklim krizine karşı **"Acil Müdahale Edilmesi Gereken Öncelikli Sokaklar"** listelenmiştir.
+
+```
+
+```
