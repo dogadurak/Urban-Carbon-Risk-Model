@@ -7,6 +7,8 @@ Bu proje; İzmir'in en dinamik, heterojen ve yapısal açıdan yoğun bölgeleri
 ### 📌 Temel Amaç:
 Hızlı kentsel dönüşümün, yüksek katlı iş merkezlerinin ve yoğun transit ulaşım koridorlarının bir arada bulunduğu Bayraklı'da; emisyon kaynakları ile mikroklimatik etkileri mekânsal olarak ilişkilendirmektir. Proje, kentsel morfolojiyi (bina hacimleri, nüfus yoğunluğu), ulaşım ağlarını ve arazi yüzey sıcaklığını (LST) yüksek çözünürlüklü **50×50 metrelik hücreler (grid)** seviyesinde entegre ederek; sürdürülebilir kentsel planlama, kentsel ısı adası (UHI) mitigasyonu ve yerel yönetimler/AFAD için **Mekânsal Karar Destek Çıktıları** üretmeyi hedefler.
 
+<img width="1665" height="554" alt="image" src="https://github.com/user-attachments/assets/5183e3d0-452d-48b0-8ecf-691be5dca4bd" />
+
 ---
 
 ## 🗺️ 2. Tematik Haritalar (Maps & Visualizations)
