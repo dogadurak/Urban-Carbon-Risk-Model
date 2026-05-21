@@ -1,0 +1,145 @@
+import geopandas as gpd
+import pandas as pd
+
+print("1. Ham veri okunuyor...")
+binalar = gpd.read_file("bayrakli_binalar.geojson")
+
+if binalar.crs.to_epsg() != 32635:
+    binalar = binalar.to_crs(epsg=32635)
+binalar['taban_alani_m2'] = binalar.geometry.area
+
+# ── YARDIMCI FONKSİYONLAR ────────────────────────────────────────────────────
+
+def _osm_kat(row):
+    val = row.get('building:levels')
+    if val is None or (isinstance(val, float) and pd.isna(val)):
+        return None
+    try:
+        v = float(val)
+        return v if 1 <= v <= 150 else None
+    except (ValueError, TypeError):
+        return None
+
+def osm_tip(row):
+    b = str(row.get('building', '') or '').lower()
+    a = str(row.get('amenity',  '') or '').lower()
+    return b, a
+
+# ── ANA TAHMİN FONKSİYONU ────────────────────────────────────────────────────
+
+def akilli_kat_tahmini(row):
+    isim  = str(row.get('name', '') or '').lower().strip()
+    alan  = row['taban_alani_m2']
+    b_tip, a_tip = osm_tip(row)
+
+    ISIM_KURALLARI = [
+        (['bayraklı tower', 'bayrakli tower'],          35, 35),
+        (['biva tower'],                                 35, 35),
+        (['tower', 'kule', 'rezidans',
+          'residence', 'vista'],                         15, 40),
+        (['plaza', 'iş merkezi', 'is merkezi',
+          'ege iş', 'ege is'],                           10, 25),
+        (['hilton', 'marriott', 'sheraton',
+          'wyndham', 'holiday inn', 'garden inn'],       10, 20),
+        (['hastane', 'hospital', 'klinik',
+          'tıp merkezi', 'tip merkezi',
+          'rehabilitasyon', 'sağlık ocağı',
+          'saglik ocagi'],                                4,  6),
+        (['ilkokul', 'ortaokul', 'lise',
+          'okul', 'school', 'kolej',
+          'imam hatip'],                                  3,  5),
+        (['anaokulu', 'kindergarten'],                    2,  2),
+        (['üniversite', 'universite',
+          'fakülte', 'fakulte'],                          4,  8),
+        (['cami', 'camii', 'mosque', 'mescit'],           1,  1),
+        (['kilise', 'church', 'synagogue'],               1,  2),
+        (['belediye', 'kaymakamlık', 'valilik',
+          'adliye', 'adli tıp', 'adli tip'],              4,  6),
+        (['polis', 'jandarma', 'bekçi', 'bekci'],         2,  3),
+        (['itfaiye'],                                      2,  3),
+        (['arıtma', 'aritma', 'santral',
+          'trafo', 'depo', 'matbaa'],                     1,  2),
+        (['telekom', 'ptt', 'elektrik'],                   3,  5),
+        (['kızılay', 'kizilay'],                           3,  5),
+        (['avm', 'alışveriş', 'alisveris',
+          'migros', 'carrefour', 'bim',
+          'a101', 'şok', 'sok'],                          1,  3),
+        (['arena', 'stadyum', 'spor salonu',
+          'yüzme', 'yuzme'],                              1,  2),
+        (['tekstil', 'mermer', 'otomotiv',
+          'fabrika', 'sanayi', 'depo',
+          'halk ekmek'],                                   1,  2),
+    ]
+
+    for kelimeler, k_min, k_max in ISIM_KURALLARI:
+        if any(k in isim for k in kelimeler):
+            osm = _osm_kat(row)
+            if osm and k_min <= osm <= k_max:
+                return osm
+            return float((k_min + k_max) // 2 or k_min)
+
+    ETIKET_KATLAR = {
+        'cathedral':          1,  'church':         1,
+        'mosque':             1,  'temple':         1,
+        'shrine':             1,  'religious':      1,
+        'hospital':           5,  'clinic':         4,
+        'school':             4,  'university':     5,
+        'kindergarten':       2,  'college':        4,
+        'retail':             2,  'supermarket':    2,
+        'warehouse':          1,  'industrial':     1,
+        'garage':             1,  'garages':        1,
+        'roof':               1,  'shed':           1,
+        'greenhouse':         1,  'service':        1,
+        'kiosk':              1,  'stadium':        1,
+        'sports_centre':      1,
+        'hotel':             12,  'office':         8,
+        'apartments':         7,  'residential':    5,
+        'house':              2,  'detached':       2,
+        'semidetached_house': 2,  'terrace':        3,
+        'bungalow':           1,
+        'commercial':         5,  'civic':          4,
+        'public':             4,  'government':     4,
+        'mixed_use':          6,
+    }
+
+    if b_tip in ETIKET_KATLAR:
+        osm = _osm_kat(row)
+        beklenen = float(ETIKET_KATLAR[b_tip])
+        if osm and beklenen * 0.5 <= osm <= beklenen * 3.0:
+            return osm
+        return beklenen
+
+    osm = _osm_kat(row)
+    if osm and 2 <= osm <= 60:
+        return osm
+
+    if alan < 50:     return 1.0
+    if alan < 120:    return 2.0
+    if alan < 300:    return 5.0
+    if alan < 800:    return 8.0
+    if alan < 2000:   return 3.0
+    if alan < 5000:   return 2.0
+    return 1.0
+
+# ── UYGULA ───────────────────────────────────────────────────────────────────
+
+print("2. Kat ataması yapılıyor...")
+binalar['akilli_kat'] = binalar.apply(akilli_kat_tahmini, axis=1)
+
+print("3. Hacim hesaplanıyor...")
+binalar['bina_hacmi_m3'] = binalar['taban_alani_m2'] * binalar['akilli_kat'] * 3.0
+
+# ── QGIS İÇİN TEMİZ ÇIKTI (EPSG:32635) ──────────────────────────────────────
+print("4. EPSG:32635 korunuyor...")
+
+tutulacak = ['geometry', 'name', 'taban_alani_m2', 'akilli_kat', 'bina_hacmi_m3']
+mevcut = [s for s in tutulacak if s in binalar.columns]
+binalar = binalar[mevcut]
+
+print("5. GeoJSON kaydediliyor...")
+binalar.to_file("bayrakli_qgis_hazir.geojson", driver='GeoJSON')
+
+print(f"\n✅ BİTTİ! bayrakli_qgis_hazir.geojson oluşturuldu.")
+print(f"   Toplam bina  : {len(binalar)}")
+print(f"   Toplam hacim : {binalar['bina_hacmi_m3'].sum():,.0f} m³")
+print(f"   Ortalama kat : {binalar['akilli_kat'].mean():.2f}")
