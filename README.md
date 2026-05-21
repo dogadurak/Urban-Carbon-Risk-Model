@@ -5,7 +5,7 @@
 Bu proje; İzmir'in en dinamik, heterojen ve yapısal açıdan yoğun bölgelerinden biri olan **Bayraklı** ilçesi için **hücresel tabanlı bir kentsel karbon risk indeksi (Grid-Based Urban Carbon Risk Index)** modellemek amacıyla geliştirilmiştir. 
 
 ### 📌 Temel Amaç:
-Hızlı kentsel dönüşümün, yüksek katlı iş merkezlerinin (gökdelenler bölgesinin) ve yoğun transit ulaşım koridorlarının (Altınyol gibi) bir arada bulunduğu Bayraklı'da; emisyon kaynakları ile mikroklimatik etkileri mekânsal olarak ilişkilendirmektir. Proje, kentsel morfolojiyi (bina hacimleri, nüfus yoğunluğu), ulaşım ağlarını ve arazi yüzey sıcaklığını (LST) yüksek çözünürlüklü **50×50 metrelik hücreler (grid)** seviyesinde entegre ederek; sürdürülebilir kentsel planlama, kentsel ısı adası (UHI) mitigasyonu ve yerel yönetimler/AFAD için **Mekânsal Karar Destek Çıktıları** üretmeyi hedefler.
+Hızlı kentsel dönüşümün, yüksek katlı iş merkezlerinin ve yoğun transit ulaşım koridorlarının bir arada bulunduğu Bayraklı'da; emisyon kaynakları ile mikroklimatik etkileri mekânsal olarak ilişkilendirmektir. Proje, kentsel morfolojiyi (bina hacimleri, nüfus yoğunluğu), ulaşım ağlarını ve arazi yüzey sıcaklığını (LST) yüksek çözünürlüklü **50×50 metrelik hücreler (grid)** seviyesinde entegre ederek; sürdürülebilir kentsel planlama, kentsel ısı adası (UHI) mitigasyonu ve yerel yönetimler/AFAD için **Mekânsal Karar Destek Çıktıları** üretmeyi hedefler.
 
 ---
 
