@@ -49,7 +49,8 @@ Hızlı kentsel dönüşümün, yüksek katlı iş merkezlerinin (gökdelenler b
 ---
 
 ### 2.4. K-Means Kümeleme Haritası (K-Means Cluster Map)
-![K-Means](maps/k_means.png)
+<img width="3507" height="2480" alt="k_means" src="https://github.com/user-attachments/assets/486d18dc-319e-4cf9-9f2e-39ae7fe35c0d" />
+
 > **Açıklama:** Gözetimsiz makine öğrenmesi (Unsupervised Machine Learning) yöntemiyle, hücrelerin sahip olduğu tüm risk parametreleri analiz edilerek üretilen 6 homojen risk bölgesidir (Silhouette skoru = 0.335).
 
 ## 🌐 3B Web Tabanlı Karar Destek Sistemi (Interactive 3D Web GIS)
