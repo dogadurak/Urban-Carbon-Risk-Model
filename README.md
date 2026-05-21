@@ -52,6 +52,18 @@ Hızlı kentsel dönüşümün, yüksek katlı iş merkezlerinin (gökdelenler b
 ![K-Means](maps/k_means.png)
 > **Açıklama:** Gözetimsiz makine öğrenmesi (Unsupervised Machine Learning) yöntemiyle, hücrelerin sahip olduğu tüm risk parametreleri analiz edilerek üretilen 6 homojen risk bölgesidir (Silhouette skoru = 0.335).
 
+## 🌐 3B Web Tabanlı Karar Destek Sistemi (Interactive 3D Web GIS)
+
+Proje kapsamında üretilen 50x50m grid tabanlı risk skorları, kentsel morfolojinin daha iyi anlaşılabilmesi için doğrudan 3 boyutlu bina geometrilerine (Building Footprints & Extrusions) aktarılmıştır. 
+
+Kullanıcılar, geliştirilen interaktif Web GIS paneli üzerinden binalara tıklayarak **bina bazlı risk skorunu, kat sayısını, taban alanını ve bulunduğu bölgenin alt indeks (Mikroklima, Ulaşım vb.) değerlerini** dinamik olarak inceleyebilir.
+
+<img width="1423" height="782" alt="image" src="https://github.com/user-attachments/assets/b7097646-90b4-4cc7-a5ef-18c558249dec" />
+
+🔗 **Canlı Uygulama (Live App):** [İklim Dirençli Kentler Karar Destek Sistemi](https://iklim-direncli-kentler-karar-destek.vercel.app/)
+
+![3B Kentsel Morfoloji](maps/3b_web_gis.jpg)
+> **Açıklama:** Arayüz üzerinden bir binaya tıklandığında açılan "Bina Analizi" penceresi. Renk skalası, binanın Bütünleşik Karbon Risk durumunu (0-25 Düşük, 100+ Yüksek) 3 boyutlu olarak görselleştirmektedir.
 ---
 
 ## 📌 3. Proje İş Akışı (Project Pipeline)
